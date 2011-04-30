@@ -3,7 +3,8 @@ from __future__ import unicode_literals
 from django.utils.encoding import force_text
 from django.utils.functional import wraps
 from django.utils import six
-
+from django.template.defaultfilters import lower
+from django.conf import settings
 
 def parse_tags(tagstring):
     """
@@ -19,7 +20,11 @@ def parse_tags(tagstring):
     if not tagstring:
         return []
 
-    tagstring = force_text(tagstring)
+    # Should all tags be handled as lowercase?
+    if settings.TAGGIT_FORCE_LOWERCASE == True:
+        tagstring = lower(force_unicode(tagstring))
+    else:
+        tagstring = force_unicode(tagstring)
 
     # Special case - if there are no commas or double quotes in the
     # input, we don't *do* a recall... I mean, we know we only need to
