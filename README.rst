@@ -35,6 +35,11 @@ but show up in different taxonomies), add to settings.py:
 
 ``TAGGIT_FORCE_LOWERCASE = True``
 
-For more info check out the documentation.  And for questions about usage or
+If you want to prevent certain words from being added as tags (such as
+English articles to, from, the, of, etc.) add to settings.py:
+
+``TAGGIT_STOPWORDS = [u'a', u'an', u'and', u'be', u'from', u'of']``
+
+For more info checkout out the documentation.  And for questions about usage or
 development you can contact the
 `mailinglist <http://groups.google.com/group/django-taggit>`_.
