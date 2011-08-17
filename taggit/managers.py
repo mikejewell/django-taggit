@@ -6,6 +6,7 @@ try:
     from django.contrib.contenttypes.fields import GenericRelation
 except ImportError:  # django < 1.7
     from django.contrib.contenttypes.generic import GenericRelation
+from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db import models, router
 from django.db.models.fields import Field
@@ -78,6 +79,7 @@ class _TaggableManager(models.Manager):
         self.model = model
         self.instance = instance
         self.prefetch_cache_name = prefetch_cache_name
+        self.force_lowercase = getattr(settings, 'TAGGIT_FORCE_LOWERCASE', False)
         self._db = None
 
     def is_cached(self, instance):
@@ -128,11 +130,20 @@ class _TaggableManager(models.Manager):
 
     @require_instance_manager
     def add(self, *tags):
+        if self.force_lowercase:
+            lower_tags = []
+            for t in tags:
+                if not isinstance(t, self.through.tag_model()):
+                    t = t.lower()
+                lower_tags.append(t)
+            tags = lower_tags
+
         str_tags = set([
             t
             for t in tags
             if not isinstance(t, self.through.tag_model())
         ])
+
         tag_objs = set(tags) - str_tags
         # If str_tags has 0 elements Django actually optimizes that to not do a
         # query.  Malcolm is very smart.
