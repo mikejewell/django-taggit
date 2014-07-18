@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 
-from django.utils.encoding import force_text
+from django.utils.encoding import force_text, force_unicode
 from django.utils.functional import wraps
 from django.utils import six
 from django.template.defaultfilters import lower
